@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CineDine</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background-color: #121212;
+            color: white;
+        }
+
+        header {
+            background: #e50914;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1f1f1f;
+            padding: 10px 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        nav div {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: #1e1e1e;
+            padding: 15px;
+            width: 220px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        button {
+            background: #e50914;
+            border: none;
+            color: white;
+            padding: 8px;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        img {
+            border-radius: 5px;
+        }
+
+        .info {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎬 CineDine 🍔</h1>
+</header>
+
+<nav>
+    <div>
+        <a href="/">Home</a>
+        <a href="#">Movies</a>
+        <a href="#">Restaurants</a>
+    </div>
+
+    <div>
+        {% if user.is_authenticated %}
+            <span>Welcome, {{ user.username }}</span>
+
+            <form action="/accounts/logout/" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="/accounts/login/">Login</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="container">
+
+    {% if messages %}
+        {% for message in messages %}
+            <p role="status">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if movie_error %}
+        <p role="status">Movie listings are temporarily unavailable. Please check the TMDB API configuration and try again later.</p>
+    {% endif %}
+
+    <!-- 🎬 REAL MOVIES -->
+    <h2>🎥 Now Showing</h2>
+    <div class="cards">
+        {% for movie in movies %}
+        <div class="card">
+            <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_path }}" width="100%">
+            <h3>{{ movie.title }}</h3>
+            <p class="info">⭐ {{ movie.vote_average }}</p>
+
+            <a href="/book/?movie={{ movie.title }}">
+                <button>Book Now</button>
+            </a>
+        </div>
+        {% empty %}
+        <p>No movie listings are currently available.</p>
+        {% endfor %}
+    </div>
+
+    <!-- 🍽 DYNAMIC RESTAURANTS -->
+    <h2>🍽 Nearby Restaurants</h2>
+    <div class="cards">
+        {% for r in restaurants %}
+
+        <!-- ✅ CLICKABLE CARD -->
+        <a href="/restaurant/{{ r.id }}/" style="text-decoration:none; color:white;">
+            <div class="card">
+                {% if r.image %}
+                <img src="{{ r.image.url }}" width="100%">
+                {% endif %}
+                <h3>{{ r.name }}</h3>
+                <p>⭐ {{ r.rating }}</p>
+                <p>🍴 {{ r.cuisine }}</p>
+                <p>💰 {{ r.price_range }}</p>
+                <p>📍 {{ r.distance }}</p>
+                <p>⏰ {{ r.opening_time }} - {{ r.closing_time }}</p>
+            </div>
+        </a>
+
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>

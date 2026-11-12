@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ restaurant.name }}</title>
+    <style>
+        body {
+            background: #121212;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+        }
+
+        .box {
+            margin-top: 50px;
+        }
+
+        img {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h1>{{ restaurant.name }}</h1>
+
+    {% if restaurant.image %}
+    <img src="{{ restaurant.image.url }}" width="300">
+    {% endif %}
+
+    <p>⭐ Rating: {{ restaurant.rating }}</p>
+    <p>🍴 Cuisine: {{ restaurant.cuisine }}</p>
+    <p>💰 Price: {{ restaurant.price_range }}</p>
+    <p>📍 Distance: {{ restaurant.distance }}</p>
+    <p>⏰ {{ restaurant.opening_time }} - {{ restaurant.closing_time }}</p>
+
+    <br><br>
+    <a href="/" style="color:red;">⬅ Back to Home</a>
+</div>
+
+</body>
+</html>
